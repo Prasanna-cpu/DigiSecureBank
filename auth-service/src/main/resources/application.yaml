@@ -1,0 +1,29 @@
+spring:
+  application:
+    name: auth-service
+
+
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:3307/user_db}
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:pwd}
+
+  jpa:
+    generate-ddl: true
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.MySQLDialect
+
+server:
+  port: 3010
+  shutdown: graceful
+
+
+jwt:
+  secret: ${JWT_SECRET}
+  header: ${JWT_HEADER}
+  issuer: http://localhost:3010

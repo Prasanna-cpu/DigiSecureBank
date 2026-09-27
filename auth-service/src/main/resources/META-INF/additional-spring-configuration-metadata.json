@@ -1,0 +1,19 @@
+{
+  "properties": [
+    {
+      "name": "jwt.secret",
+      "type": "java.lang.String",
+      "description": "JWT secret key for token signing."
+    },
+    {
+      "name": "jwt.header",
+      "type": "java.lang.String",
+      "description": "HTTP header name for JWT token."
+    },
+    {
+      "name": "jwt.issuer",
+      "type": "java.lang.String",
+      "description": "JWT issuer URL."
+    }
+  ]
+}

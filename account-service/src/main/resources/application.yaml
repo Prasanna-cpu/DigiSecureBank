@@ -1,0 +1,79 @@
+spring:
+  application:
+    name: account-service
+
+
+  datasource:
+    url: jdbc:mysql://localhost:3307/account_db
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+
+  jpa:
+    generate-ddl: true
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.MySQLDialect
+
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: account-service-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring:
+          json:
+            trusted:
+              packages: "*"
+            use:
+              type:
+                headers: false
+            value:
+              default:
+                type: java.util.HashMap
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+
+server:
+  port: 3011
+  shutdown: graceful
+
+
+auth-service:
+  url: http://localhost:3010
+
+
+resilience4j:
+  retry:
+    backends:
+      auth-service:
+        max-attempts: 5
+        wait-duration:
+          seconds: 1
+
+  circuitbreaker:
+    backends:
+      auth-service:
+        sliding-window-type: COUNT_BASED
+        sliding-window-size: 6
+        minimum-number-of-calls: 5
+        wait-duration-in-open-state:
+          seconds: 20
+        permitted-number-of-calls-in-half-open-state: 2
+        failure-rate-threshold: 50
+
+jwt:
+  secret: ${JWT_SECRET}
+  issuer: http://localhost:3010

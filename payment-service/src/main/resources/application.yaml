@@ -1,0 +1,67 @@
+spring:
+  application:
+    name: payment-service
+
+  datasource:
+    url: jdbc:mysql://localhost:3307/payment_db
+    password: ${DB_PASSWORD}
+    username: ${DB_USERNAME}
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.MySQLDialect
+
+    generate-ddl: true
+    show-sql: true
+
+
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: payment-service-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring:
+          json:
+            trusted:
+              packages: "*"
+            use:
+              type:
+                headers: false
+            value:
+              default:
+                type: java.util.HashMap
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+
+razorpay:
+  key-id: rzp_test_Tgkc7EZy9vLcoK
+  key-secret: puQIDhpmdA6qG4GoeL98z63h
+
+
+
+jwt:
+  secret: ${JWT_SECRET}
+  issuer: http://localhost:3010
+
+server:
+  port: 3014
+
+#management:
+#  endpoints:
+#    web:
+#      exposure:
+#        include: health,info
